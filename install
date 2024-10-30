@@ -1,3 +1,35 @@
 #!/bin/sh
 
-echo "Testing"
+echo "press any key to create required directories"
+read -n 1 -s
+
+mkdir -p ~/.config/nix
+mkdir ~/.password-store
+
+echo "press any key to create Github ssh key"
+read -n 1 -s
+
+ssh-keygen -t ed25519 -C pfargo1701@gmail.com
+eval "$(ssh-agent -s)"
+CONFIG=$(cat << 'EOM'
+Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+EOM
+)
+
+echo "$CONFIG" > ~/.ssh/config
+
+
+echo "press any key to download password store and nix configuration files"
+read -n 1 -s
+
+git clone git@github.com:RealPatricia/PornoMags.git ~/.password-store
+git clone git@github.com:RealPatricia/nix-macos.git ~/.config/nix
+
+echo "press any key to install nix"
+read -n 1 -s
+
+eval $(curl -L https://nixos.org/nix/install)
+nix --extra-experimental-features 'nix-command' --extra-experimental-features 'flakes' run nix-darwin -- switch --flake ~/.config/nix
