@@ -31,5 +31,6 @@ git clone git@github.com:RealPatricia/nix-macos.git ~/.config/nix
 echo "press any key to install nix"
 read -n 1 -s
 
-eval $(curl -L https://nixos.org/nix/install)
+NIXIN=$(curl -L https://nixos.org/nix/install)
+eval "$NIXIN"
 nix --extra-experimental-features 'nix-command' --extra-experimental-features 'flakes' run nix-darwin -- switch --flake ~/.config/nix
